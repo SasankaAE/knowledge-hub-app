@@ -2,17 +2,15 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, Clock } from "lucide-react";
 
+import { Discussion } from "@/components/discussion";
+import { EditArticleButton } from "@/components/edit-article-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { VoteButton } from "@/components/vote-button";
-import { articles } from "@/lib/data";
 import { getArticle } from "@/lib/articles";
 
-export function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }));
-}
+
 
 export default function ArticlePage(props: PageProps<"/articles/[slug]">) {
   return (
@@ -73,8 +71,9 @@ async function ArticleContent({ params }: { params: Promise<{ slug: string }> })
                 {article.readMinutes} min
               </div>
             </div>
-            <div className="ml-auto">
-              <VoteButton initial={article.votes} />
+            <div className="ml-auto flex items-center gap-2">
+              <EditArticleButton slug={article.slug} authorId={article.authorId} />
+              <VoteButton initial={article.votes} articleId={article.id} />
             </div>
           </div>
         </header>
@@ -86,30 +85,7 @@ async function ArticleContent({ params }: { params: Promise<{ slug: string }> })
         </div>
       </article>
 
-      <section aria-labelledby="discussion" className="space-y-4 border-t pt-8">
-        <h2 id="discussion" className="font-serif text-2xl font-semibold">
-          Discussion
-        </h2>
-        {article.comments.length === 0 && (
-          <p className="text-sm text-muted-foreground">No comments yet.</p>
-        )}
-        {article.comments.map((c, i) => (
-          <Card key={i} className="py-4">
-            <CardContent className="flex gap-3">
-              <Avatar className="size-9">
-                <AvatarFallback className="text-xs">{c.initials}</AvatarFallback>
-              </Avatar>
-              <div className="space-y-1">
-                <div className="text-sm">
-                  <span className="font-medium">{c.author}</span>{" "}
-                  <span className="text-muted-foreground">· {c.when}</span>
-                </div>
-                <p>{c.text}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </section>
+      <Discussion articleId={article.id} initial={article.comments} />
     </main>
   );
 }

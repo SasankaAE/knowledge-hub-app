@@ -57,10 +57,10 @@ export function ArticleList({ articles }: { articles: Article[] }) {
               ))}
             </CardContent>
             <CardFooter className="flex-wrap gap-4">
-              <VoteButton initial={a.votes} />
+              <VoteButton initial={a.votes} articleId={a.id} />
               <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                 <MessageSquare className="size-4" aria-hidden="true" />
-                {a.comments.length}
+                {a.commentCount ?? a.comments.length}
               </span>
               <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Clock className="size-4" aria-hidden="true" />
